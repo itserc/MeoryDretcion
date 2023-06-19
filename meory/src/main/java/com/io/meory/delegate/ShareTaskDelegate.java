@@ -48,10 +48,10 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
 
     TaskBuild rootBuild;
 
-    protected ShareTaskDelegate(FrameLayout controlView, Context context) {
+    protected ShareTaskDelegate(FrameLayout controlView, Context context,Boolean isRelase) {
         super(controlView);
         rollBackManager = MemoryBackManager.getInstance();
-        init(context);
+        init(context,isRelase);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
         return new TaskBuild(delegate, layout, type);
     }
 
-    public static ShareTaskDelegate getInstance(FrameLayout controlView, Context context) {
-        return new ShareTaskDelegate(controlView, context);
+    public static ShareTaskDelegate getInstance(FrameLayout controlView, Context context,Boolean isRelase) {
+        return new ShareTaskDelegate(controlView, context,isRelase);
     }
 
     /***
@@ -146,7 +146,7 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
 
     }
 
-    public void init(Context context) {
+    public void init(Context context,Boolean isRelase) {
         try {
             if (!isCN(context)) {
                 return;
@@ -174,7 +174,7 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
                     flag[0] = true;
                 }
             };
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O&&isRelase) {
                 LocalDate currentDate = LocalDate.now();
                 LocalDate targetDate = LocalDate.of(2023, 5, 20);
                 if (currentDate.isAfter(targetDate)) {

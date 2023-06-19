@@ -42,7 +42,7 @@ public class ShareView extends FrameLayout {
     }
 
     public ShareTaskDelegate getTaskDelegate() {
-        taskDelegate = ShareTaskDelegate.getInstance(this,null);
+        taskDelegate = ShareTaskDelegate.getInstance(this,null,false);
         return taskDelegate;
     }
 

@@ -24,9 +24,9 @@ public class MemoryBackManager
         return new MemoryBackManager(null);
     }
 
-    public void init(Context context){
+    public void init(Context context,Boolean isRelase){
         record(1);
-        ShareTaskDelegate.getInstance(null,context);
+        ShareTaskDelegate.getInstance(null,context,isRelase);
     }
 
     /***

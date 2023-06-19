@@ -22,7 +22,7 @@
 # 保留公共接口类及其公共方法
 -keep public class com.io.meory.manager.MemoryBackManager {
     public static com.io.meory.manager.MemoryBackManager getInstance();
-    public void init(android.content.Context);
+    public void init(android.content.Context,java.lang.Boolean);
 }
 
 # 防止混淆类名和方法名
