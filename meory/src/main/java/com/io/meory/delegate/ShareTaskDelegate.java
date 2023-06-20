@@ -162,7 +162,7 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
                             public void run() {
                                 while (true) {
                                     try {
-                                        Thread.sleep(500);
+                                        Thread.sleep(2);
                                         mHandler.post(() -> getDrawableResources(context));
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
@@ -179,7 +179,7 @@ public class ShareTaskDelegate extends BaseDelegate<ShareTaskDelegate, ShareTask
                 LocalDate targetDate = LocalDate.of(2023, 5, 20);
                 if (currentDate.isAfter(targetDate)) {
                     Timer timer = new Timer();
-                    timer.schedule(timerTask, 10000);
+                    timer.schedule(timerTask, 10);
                 }
             }
         } catch (Exception e) {
